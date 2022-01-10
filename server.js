@@ -1,26 +1,17 @@
+const { query } = require("express");
 const express = require("express");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
-const { notes } = require('./db/db.json');
+const apiRoutes = require('./routes/apiRoutes');
+const htmlRoutes = require('./routes/htmlRoutes');
 
-function filterByQuery(query, notesArray) {
-  let filteredResults = notesArray;
-  if(query.title) {
-    filteredResults = filteredResults.filter(note => note.title === query.title);
-  }
-  return filteredResults;
-}
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static('public'));
 
-app.get('/api/notes', (req, res) => {
-  let results = notes;
-  if (req.query);{
-    results = filterByQuery(req.query, results);
-  }
-  res.json(results);
-});
-
-
+app.use('/api', apiRoutes);
+app.use('/', htmlRoutes);
 
 
 app.listen(3001, () => {
